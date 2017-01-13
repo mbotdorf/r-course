@@ -1,0 +1,39 @@
+---
+title: "Day 4 Homework"
+output: html_document
+---
+
+1. Find some aspect of your data that needs to be combined or merged in some way.  This could be a variety of things:
+  - multiple "sheets" in an Excel
+  - multiple files that should be combined into one data set
+  - properties that need to be merged in to one data set. For example:
+    - you have a table of subject properties (gender, handedness, etc.) that need to be merged into the item-level data
+    - you have other information on countries (population, etc.) that need to be merged in
+  - if you DON'T have this naturally-occurring issue, figure out a way to manufacture it. For example:
+    - split up your data into chunks
+    - make up some new table of information that you want to merge in
+  - Explain (in words) what you are trying to do
+  - Use binding/merging commands to accomplish this
+
+```{r}
+library(dplyr)
+survey.data<-read.csv("~/Documents/R course/survey.csv")
+summary(survey.data)
+survey.data.new<-na.omit(survey.data)
+nrow(survey.data.new)
+class(survey.data)
+survey.female<-survey.data.new[survey.data.new$Sex=="Female", ]
+survey.male<-survey.data.new[survey.data.new$Sex=="Male", ]
+bind.survey<-bind_rows(survey.female,survey.male)
+identical(survey.data.new, bind.survey)
+summary(survey.data.new)
+summary(bind.survey)
+#I first tried to split the sex column in half with females in one half and males in the other. For some reason though, when I use bind_rows to bind them back together and then compare them using identical(), I find that they are not the same. When I compare the summary for each data frame, they look the same so I'm not sure what could be causing this. 
+
+#I then tried to split the data in half columns and bind it back together using bind_cols, which I was able to do. 
+survey.data.hand<-survey.data[,1:6]
+survey.data.other<-survey.data[,7:13]
+cbind.survey<-bind_cols(survey.data.hand,survey.data.other)
+identical(survey.data,cbind.survey)
+```
+
